@@ -20,10 +20,10 @@ class DB_ops {
     }
 
     public function create($Name, $username, $phone, $whatsapp, $email, $Password, $image, $address) {
-        $sql = "INSERT INTO users (Id,name, username, phone, whatsapp, email, password, image, address) 
-                VALUES (1,?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO users (name, username, phone, whatsapp, email, password, image, address) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     
-        // Prepare the statement
+       
         $stmt = $this->conn->prepare($sql);
         
         if (!$stmt) {
@@ -33,12 +33,12 @@ class DB_ops {
         $stmt->bind_param("ssssssss", $Name, $username, $phone, $whatsapp, $email, $Password, $image, $address);
     
         if ($stmt->execute()) {
-            echo "New record created successfully";
+            echo "New record created successfully. ID: " . $this->conn->insert_id;
         } else {
             echo "Error: " . $stmt->error;
         }
     
-        // Close the statement
+       
         $stmt->close();
     }
     
@@ -72,6 +72,8 @@ class DB_ops {
 }
 
 $ee = new DB_ops();
+//$ee->create("John Doe", "johnd", "123456789", "987654321", "john@example.com", "securepass", "profile.jpg", "123 Street, City");
+//$ee->create("Jane Smith", "janes", "5551234567", "5559876543", "jane@example.com", "mypassword123", "avatar.jpg", "456 Avenue, New York");
 //$ee->create("dw","ww","11","22","33","rrg","efe","wdww");
 //$ee->clearDB();
 //$ee->read(1);
