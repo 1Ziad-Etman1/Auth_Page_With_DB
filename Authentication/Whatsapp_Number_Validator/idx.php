@@ -1,5 +1,5 @@
 <?php
-    require_once __DIR__ . '/validate_whatsapp.php'; // Include function file
+    require_once __DIR__ . '/validator.php'; // Include function file
 
     $result = null;
 
