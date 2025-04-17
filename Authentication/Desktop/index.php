@@ -56,7 +56,7 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
     } else {
         document.getElementById('fullNameFeedback').textContent = '';
     }
-
+    
   
 });
 
