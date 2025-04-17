@@ -6,6 +6,8 @@
     <span id="usernameFeedback"></span>
     <br>
     <input type="text" id= "full_name" name="name" placeholder="Full Name" required><br><br>
+    <span id="fullNameFeedback"></span>
+
     <input type="text" name="phone" placeholder="Phone" required><br><br>
     <input type="text" name="whatsapp" placeholder="WhatsApp" required><br><br>
     <input type="email" name="email" placeholder="Email" required><br><br>
