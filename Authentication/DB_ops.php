@@ -50,7 +50,7 @@ class DB_ops {
         $stmt->execute();
         $result = $stmt->get_result();
         
-        // Fetch data as an associative array mesh map, leh m3rfsh
+        
         $user = $result->fetch_assoc(); 
         $stmt->close();
         return $user;
@@ -79,18 +79,5 @@ class DB_ops {
 }
 
 $ee = new DB_ops();
-//$ee->create("asdsss", "johnd", "123456789", "987654321", "john@example.com", "securepass", "profile.jpg", "123 Street, City");
-//$ee->create("Jane Smith", "janes", "5551234567", "5559876543", "jane@example.com", "mypassword123", "avatar.jpg", "456 Avenue, New York");
-//$ee->create("dw","ww","11","22","33","rrg","efe","wdww");
-//$ee->clearDB();
-//$ee->read(1);
-//$ee->delete(1);
-// $userData = $ee->read(1); // Fetch user with ID = 1
-
-// if ($userData) {
-//     print_r($userData);
-// } else {
-//     echo "No user found.";
-// }
 
 ?>

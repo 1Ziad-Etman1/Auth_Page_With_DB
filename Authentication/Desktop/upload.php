@@ -17,19 +17,19 @@ if ($imageInfo === false) {
     $uploadOk = 0;
 }
 
-// Check if file already exists
+
 if (file_exists($target_file)) {
     echo "Sorry, file already exists.<br>";
     $uploadOk = 0;
 }
 
-// Check file size
+
 if ($_FILES["fileToUpload"]["size"] > 500000) {
     echo "Sorry, your file is too large.<br>";
     $uploadOk = 0;
 }
 
-// File type check
+
 if (!in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
     echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.<br>";
     $uploadOk = 0;
@@ -40,7 +40,7 @@ $whatsapp = $_POST['whatsapp'];
 $response = validate_whatsapp_numbers([$whatsapp]);
 echo "<pre>" . print_r($response, true) . "</pre>";
 
-// Check if WhatsApp number is valid
+
 $whatsappValid = false;
 foreach ($response as $item) {
     if ($item['phone_number'] == $whatsapp && $item['status'] == 'valid') {
@@ -51,7 +51,7 @@ foreach ($response as $item) {
 
 echo "<pre>" . print_r($whatsappValid) . "</pre>";
 
-// Proceed with upload and DB insert
+//  upload to DB
 if ($uploadOk == 1 && $whatsappValid===true) {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
         echo "The file " . htmlspecialchars(basename($_FILES["fileToUpload"]["name"])) . " has been uploaded.<br>";
