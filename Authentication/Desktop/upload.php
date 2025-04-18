@@ -40,8 +40,19 @@ $whatsapp = $_POST['whatsapp'];
 $response = validate_whatsapp_numbers([$whatsapp]);
 echo "<pre>" . print_r($response, true) . "</pre>";
 
+// Check if WhatsApp number is valid
+$whatsappValid = false;
+foreach ($response as $item) {
+    if ($item['phone_number'] == $whatsapp && $item['status'] == 'valid') {
+        $whatsappValid = true;
+        break;
+    }
+}
+
+echo "<pre>" . print_r($whatsappValid) . "</pre>";
+
 // Proceed with upload and DB insert
-if ($uploadOk == 1) {
+if ($uploadOk == 1 && $whatsappValid===true) {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
         echo "The file " . htmlspecialchars(basename($_FILES["fileToUpload"]["name"])) . " has been uploaded.<br>";
 
@@ -59,7 +70,7 @@ if ($uploadOk == 1) {
         if ($success) {
             echo "User registered successfully.";
         } else {
-            echo "Database insert failed.";
+            
         }
     } else {
         echo "Sorry, there was an error uploading your file.";
