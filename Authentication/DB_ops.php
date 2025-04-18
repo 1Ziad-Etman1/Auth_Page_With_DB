@@ -23,7 +23,7 @@ class DB_ops {
         $sql = "INSERT INTO users (name, username, phone, whatsapp, email, password, image, address) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     
-       
+
         $stmt = $this->conn->prepare($sql);
         
         if (!$stmt) {
@@ -38,7 +38,7 @@ class DB_ops {
             echo "Error: " . $stmt->error;
         }
     
-       
+
         $stmt->close();
     }
     
@@ -69,6 +69,13 @@ class DB_ops {
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
     }
+    public function usernameExists($username) {
+        $stmt = $this->conn->prepare("SELECT id FROM users WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $stmt->store_result();
+        return $stmt->num_rows > 0;
+    }
 }
 
 $ee = new DB_ops();
@@ -87,7 +94,3 @@ $ee = new DB_ops();
 // }
 
 ?>
-
-
-
-

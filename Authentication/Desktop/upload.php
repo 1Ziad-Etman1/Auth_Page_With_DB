@@ -3,7 +3,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require_once("../DB_ops.php");
-require_once("./validator.php");
+require_once("./API_Ops.php");
 
 $target_dir = __DIR__ . "/uploads/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
