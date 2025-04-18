@@ -1,26 +1,3 @@
-<?php
-require_once __DIR__ . '/validator.php';
-
-echo "<script>console.log( 'Hello2' );</script>";
-$result = null;
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $phoneNumber[0] = isset($_POST['whatsapp']) ? trim($_POST['whatsapp']) : '';
-    echo "Hello3" . $phoneNumber[0];
-    echo "<script>console.log( 'Hello3' " . $phoneNumber[0] . ");</script>";
-
-    if (isset($_POST['submit'])) {
-        // This block runs when the "Validate" button is clicked
-        echo "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH";
-        $result = validate_whatsapp_numbers($phoneNumber);
-        echo '<div style="color:' . ($result['success'] ? 'green' : 'red') . ';">' . $result['message'] . '</div>';
-        echo "<h3>Result:</h3><pre>" . htmlspecialchars(json_encode($result, JSON_PRETTY_PRINT));
-    }
-}
-?>
-
-
-<!-- HTML inside PHP file -->
 <!DOCTYPE html>
 <html>
 
@@ -28,7 +5,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <!-- <link rel="stylesheet" href="./H&F.css">  -->
     <link rel="stylesheet" href="./style.css">
     <style>
         <?php include './style.php'; ?>
@@ -41,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Title section -->
         <div class="title">Registration</div>
         <div class="content">
-            <form id="registerForm" action="upload.php" method="post" enctype="multipart/form-data">
+            <form id="registerForm" method="POST"  enctype="multipart/form-data">
 
 
                 <div class="user-details">
@@ -68,17 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input type="text" name="phone" placeholder="Enter your number" required>
                     </div>
                     <!-- Input for Whatsapp Number -->
-                    <div class="input-boxW">
+                    <div class="input-box">
                         <span class="details">Whatsapp Number</span>
                         <input type="text" name="whatsapp" id="whatsapp" placeholder="Enter your number" required>
-                        <span class="buttonW">
-                            <button type="button" name="validate" id="validateBtn">Validate</button>
-                        </span>
-                        <!-- <?php if ($result !== null): ?>
-                            <h3>Result:</h3>
-                            <pre><?php echo htmlspecialchars(json_encode($result, JSON_PRETTY_PRINT)); ?></pre>
-                        <?php endif; ?> -->
-                        <div id="validationResult"></div>
+                        
                     </div>
                     <!-- Input for Email -->
                     <div class="input-box">
@@ -106,11 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="button">
                     <input type="submit" name="submit" value="Register">
                 </div>
-            </form>
-            <h3>Result</h3>
-            <?php if ($result !== null): ?>
-                <pre><?php echo htmlspecialchars(json_encode($result, JSON_PRETTY_PRINT)); ?></pre>
-            <?php endif; ?>
+            </form>     
         </div>
     </div>
 
@@ -119,95 +84,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#username').on('keyup', function() {
-                var username = $(this).val();
+<script>
+let isUsernameValid = false;
 
-                $.ajax({
-                    url: 'check_username.php',
-                    method: 'POST',
-                    data: {
-                        username: username
-                    },
-                    success: function(response) {
-                        if (response == 'taken') {
-                            $('#usernameFeedback').text('Username already taken').css('color', 'red');
-                        } else {
-                            $('#usernameFeedback').text('').css('color', 'green');
-                        }
-                    }
-                });
+$('#username').on('keyup', function() {
+    var username = $(this).val();
+    $.post('check_username.php', { username: username }, function(response) {
+        if (response.trim() === 'taken') {
+            $('#usernameFeedback').text('Username already taken').css('color', 'red');
+            isUsernameValid = false;
+        } else {
+            $('#usernameFeedback').text('').css('color', 'green');
+            isUsernameValid = true;
+        }
+    });
+});
 
-            });
-        });
-    </script>
-    <script>
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            let isValid = true;
+$('#registerForm').on('submit', function(e) {
+    e.preventDefault();
 
-            // Full Name validation (letters and spaces only)
-            const fullName = document.getElementById('full_name').value;
-            if (!/^[a-zA-Z\s]+$/.test(fullName)) {
-                document.getElementById('fullNameFeedback').textContent = 'Full name should contain only letters and spaces';
-                isValid = false;
-            } else {
-                document.getElementById('fullNameFeedback').textContent = '';
-            }
+    // Validate username
+    if (!isUsernameValid) {
+        alert('Username is taken. Please choose another.');
+        return;
+    }
 
+    // Validate full name
+    const fullName = $('#full_name').val();
+    if (!/^[a-zA-Z\s]+$/.test(fullName)) {
+        $('#fullNameFeedback').text('Only letters and spaces allowed.');
+        return;
+    } else {
+        $('#fullNameFeedback').text('');
+    }
 
-        });
+    // Validate password
+    const password = $('#password').val();
+    const confirmPassword = $('#confirm_password').val();
+    if (password !== confirmPassword) {
+        $('#confirmPasswordFeedback').text('Passwords do not match.');
+        return;
+    }
 
-        document.getElementById('password').addEventListener('input', function() {
-            const password = this.value;
-            const feedback = document.getElementById('passwordFeedback');
+    if (password.length < 8 || !/\d/.test(password) || !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+        $('#passwordFeedback').text('Password must be 8+ characters with number and symbol.');
+        return;
+    } else {
+        $('#passwordFeedback').text('');
+    }
 
-            if (password.length < 8) {
-                feedback.textContent = 'Password must be at least 8 characters';
-            } else if (!/\d/.test(password)) {
-                feedback.textContent = 'Password must contain at least one number';
-            } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-                feedback.textContent = 'Password must contain at least one special character';
-            } else {
-                feedback.textContent = '';
-            }
-        });
-        document.getElementById('confirm_password').addEventListener('input', function() {
-            const confirmPassword = this.value;
-            const password = document.getElementById('password').value;
-            const feedback = document.getElementById('confirmPasswordFeedback');
+    const formData = new FormData(this);
 
-            if (password !== confirmPassword) {
-                feedback.textContent = 'Passwords do not match';
-            } else {
-                feedback.textContent = '';
-            }
-        });
-    </script>
-
-    <script>
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const form = document.getElementById('registerForm');
-            const formData = new FormData(form);
-
-            $.ajax({
-                url: 'upload.php',
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    alert(response);
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error:", error);
-                }
-            });
-        });
-    </script>
+    $.ajax({
+        url: 'upload.php',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            alert(response);
+        },
+        error: function() {
+            alert('Something went wrong.');
+        }
+    });
+});
+</script>
 </body>
 
 </html>
