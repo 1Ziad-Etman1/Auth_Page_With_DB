@@ -87,3 +87,26 @@ document.getElementById('password').addEventListener('input', function() {
 });
     
 </script>
+
+<script>
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const form = document.getElementById('registerForm');
+    const formData = new FormData(form);
+
+    $.ajax({
+        url: 'upload.php',
+        type: 'POST',
+        data: formData,
+        contentType: false, 
+        processData: false, 
+        success: function(response) {
+            alert(response);
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
+        }
+    });
+});
+</script>
