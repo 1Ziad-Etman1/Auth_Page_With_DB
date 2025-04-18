@@ -2,22 +2,19 @@
 require_once __DIR__ . '/validator.php';
 
 echo "<script>console.log( 'Hello2' );</script>";
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+$result = null;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phoneNumber[0] = isset($_POST['whatsapp']) ? trim($_POST['whatsapp']) : '';
     echo "Hello3" . $phoneNumber[0];
-    echo "<script>console.log( 'Hello3' ". $phoneNumber[0] . ");</script>";
+    echo "<script>console.log( 'Hello3' " . $phoneNumber[0] . ");</script>";
 
-    if (isset($_POST['validate'])) {
+    if (isset($_POST['submit'])) {
         // This block runs when the "Validate" button is clicked
-        echo "<script>console.log( 'PRESSED' );</script>";
+        echo "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH";
         $result = validate_whatsapp_numbers($phoneNumber);
         echo '<div style="color:' . ($result['success'] ? 'green' : 'red') . ';">' . $result['message'] . '</div>';
         echo "<h3>Result:</h3><pre>" . htmlspecialchars(json_encode($result, JSON_PRETTY_PRINT));
-    }
-
-    if (isset($_POST['submit'])) {
-        // Handle actual form submission here
-        echo '<div>Form submitted with number: ' . htmlspecialchars($phoneNumber[0]) . '</div>';
     }
 }
 ?>
@@ -75,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         <span class="details">Whatsapp Number</span>
                         <input type="text" name="whatsapp" id="whatsapp" placeholder="Enter your number" required>
                         <span class="buttonW">
-                            <button type="button" id="validateBtn">Validate</button>
+                            <button type="button" name="validate" id="validateBtn">Validate</button>
                         </span>
                         <!-- <?php if ($result !== null): ?>
                             <h3>Result:</h3>
@@ -107,9 +104,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
                 <!-- Submit button -->
                 <div class="button">
-                    <input type="submit" value="Register">
+                    <input type="submit" name="submit" value="Register">
                 </div>
             </form>
+            <h3>Result</h3>
+            <?php if ($result !== null): ?>
+                <pre><?php echo htmlspecialchars(json_encode($result, JSON_PRETTY_PRINT)); ?></pre>
+            <?php endif; ?>
         </div>
     </div>
 
