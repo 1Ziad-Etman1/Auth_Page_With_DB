@@ -2,18 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Mail\NewUserRegistered;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
+use App\Models\User;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
     public function show() {
         return view('register');
     }
-
+    public function notifyAdminAboutNewUser($user)
+    {
+        $adminEmail = 'admin1234@gmail.com';
+        
+        Mail::to($adminEmail)->send(new NewUserRegistered($user));
+    }
     public function store(Request $request) {
         $validator = Validator::make($request->all(), [
         'name' => 'required|string',
@@ -30,6 +37,10 @@ class RegisterController extends Controller
         return response()->json(['errors' => $validator->errors()], 422);
     }
 
+  
+
+    print("CheckPoint 1.1");
+
     // Call the API
     $response = Http::withHeaders([
         'Content-Type' => 'application/json',
@@ -40,6 +51,7 @@ class RegisterController extends Controller
     ]);
 
     $apiData = $response->json();
+    print("CheckPoint 1.2");
 
     $valid = false;
     foreach ($apiData as $item) {
@@ -53,11 +65,19 @@ class RegisterController extends Controller
         return response()->json(['error' => 'Invalid WhatsApp number'], 422);
     }
 
+
+    print("CheckPoint 1.3");
+
+    
+    print("CheckPoint 1.4");
+
     // Image upload
     $filename = null;
     if ($request->hasFile('image')) {
         $filename = $request->file('image')->store('uploads', 'public');
     }
+    print("CheckPoint 1.5");
+
 
     $user = User::create([
         'name' => $request->name,
@@ -70,7 +90,17 @@ class RegisterController extends Controller
         'address' => $request->address
     ]);
 
-    return response()->json(['success' => true, 'user' => $user]);
-}
+    print("CheckPoint 1.6");
 
+    try {
+        Mail::to('myothera242@gmail.com')->send(new NewUserRegistered($user));
+        Log::info('Email sent successfully to admin');
+    } catch (\Exception $e) {
+        Log::info('Email sent successfully to admin');
+    }
+    print("CheckPoint 1.8");
+
+
+
+    }
 }
