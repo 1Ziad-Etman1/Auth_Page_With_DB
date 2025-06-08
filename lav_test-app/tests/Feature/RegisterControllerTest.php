@@ -37,7 +37,7 @@ class RegisterControllerTest extends TestCase
 
         $response = $this->postJson('/register', [
             'name' => 'Tarek',
-            'username' => 'ziad', // duplicate username
+            'username' => 'tarek123', // duplicate username
             'email' => 'test@example.com',
             'phone' => '1234567890',
             'whatsapp' => '1234567890',
@@ -67,7 +67,6 @@ class RegisterControllerTest extends TestCase
     #[Test]
     public function user_can_register_successfully_and_get_success_message()
     {
-        // Fake WhatsApp API returns an array with phone validation info (not wrapped in 'data')
         Http::fake([
             '*' => Http::response([
                 [
@@ -79,18 +78,18 @@ class RegisterControllerTest extends TestCase
 
         Storage::fake('public');
 
-        $response = $this->postJson('/register', [
-            'name' => 'New Userrr',
-            'username' => 'new_userkw123',
-            'email' => 'neww@example.com',
+        $response = $this->post('/register', [ // Changed to post() instead of postJson()
+            'name' => 'New User',
+            'username' => 'new_user123',
+            'email' => 'new@example.com',
             'phone' => '1234567890',
             'whatsapp' => '1234567890',
             'password' => 'secret123',
-            'image' => UploadedFile::fake()->image('photo.jpg'),
+            'image' => UploadedFile::fake()->image('avatar.jpg'), // Ensure valid image extension
         ]);
 
         $response->assertStatus(200);
-        $response->assertJsonFragment(['success' => true]);
+        $response->assertJson(['success' => true]);
 
         $this->assertDatabaseHas('users', [
             'username' => 'new_user123',
