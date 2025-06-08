@@ -14,13 +14,17 @@ class LanguageController extends Controller
             abort(400, 'Invalid locale');
         }
 
-        // Store in session
+        // Store in session and save immediately
         session(['locale' => $locale]);
-
-        // Set immediately for current request
-//        app()->setLocale($locale);
-        App::setLocale($locale);
         session()->save();
+
+        // Set for current request
+        App::setLocale($locale);  // Correct way to set locale
+
+        // Important: Clear translation cache
+        $translator = app('translator');
+        $translator->setLocale($locale);
+
         return redirect()->back();
     }
 }

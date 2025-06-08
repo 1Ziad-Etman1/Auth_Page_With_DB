@@ -192,6 +192,10 @@
             }
         });
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.documentElement.dir = "{{ config('app.direction', 'ltr') }}";
+    });
 </script>
 </body>
 
