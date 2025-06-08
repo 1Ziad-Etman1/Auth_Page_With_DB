@@ -10,8 +10,14 @@ use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    public function show() {
-        return view('register');
+    public function show()
+    {
+        $translations = trans('messages'); // Gets all messages for current locale
+
+        return view('register', [
+            'translations' => $translations,
+            'direction' => app()->getLocale() === 'ar' ? 'rtl' : 'ltr'
+        ]);
     }
 
     public function store(Request $request) {

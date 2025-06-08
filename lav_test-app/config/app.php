@@ -82,7 +82,12 @@ return [
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
+    'available_locales' => ['en', 'ar'],  // Add this new line
+
+    'timezone' => 'Asia/Riyadh', // Or appropriate Arabic timezone
+
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+
 
     /*
     |--------------------------------------------------------------------------

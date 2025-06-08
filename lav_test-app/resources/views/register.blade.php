@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
+<html lang="{{ app()->getLocale() }}" dir="{{ config('app.direction', 'ltr') }}">
 
 <head>
     <meta charset="UTF-8">
@@ -94,11 +94,17 @@
 
 {{-- Optional: Language Switcher --}}
 <div style="text-align:center; margin-top: 20px;">
-    <a href="{{ url('lang/en') }}">English</a>  |
-    <a href="{{ url('lang/ar') }}">العربية</a>
+    <a href="{{ route('lang.switch', 'en') }}"
+       class="lang-switcher {{ app()->getLocale() === 'en' ? 'active' : '' }}"
+       data-lang="en">English</a> |
+    <a href="{{ route('lang.switch', 'ar') }}"
+       class="lang-switcher {{ app()->getLocale() === 'ar' ? 'active' : '' }}"
+       data-lang="ar">العربية</a>
 </div>
-<div>
+<div style="background: #ff0; padding: 10px; text-align: center;">
     <p>Current Locale: {{ app()->getLocale() }}</p>
+    <p>Session Locale: {{ session('locale') }}</p>
+    <p>App Direction: {{ config('app.direction') }}</p>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -172,6 +178,20 @@
         fetch(`/lang/${locale}`)
             .then(() => location.reload());
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update page direction on language change
+        const direction = "{{ config('app.direction', 'ltr') }}";
+        document.documentElement.dir = direction;
+
+        // Update language links
+        document.querySelectorAll('.lang-switcher').forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('data-lang') === "{{ app()->getLocale() }}") {
+                link.classList.add('active');
+            }
+        });
+    });
 </script>
 </body>
 
