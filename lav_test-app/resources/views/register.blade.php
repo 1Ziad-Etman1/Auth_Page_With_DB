@@ -12,17 +12,17 @@
 {{--@include('partials.header')--}}
 
 {{-- Debug Information --}}
-@if(config('app.debug'))
-<div style="background: #f0f0f0; padding: 10px; margin: 10px; border: 1px solid #ccc;">
-    <h3>Debug Information:</h3>
-    <p>App Locale: {{ App::getLocale() }}</p>
-    <p>Session Locale: {{ Session::get('locale') }}</p>
-    <p>Config Locale: {{ Config::get('app.locale') }}</p>
-    <p>Current Translation: {{ __('messages.title') }}</p>
-    <p>Direction: {{ session('direction') }}</p>
-    <p>View Path: {{ __FILE__ }}</p>
-</div>
-@endif
+{{--@if(config('app.debug'))--}}
+{{--<div style="background: #f0f0f0; padding: 10px; margin: 10px; border: 1px solid #ccc;">--}}
+{{--    <h3>Debug Information:</h3>--}}
+{{--    <p>App Locale: {{ App::getLocale() }}</p>--}}
+{{--    <p>Session Locale: {{ Session::get('locale') }}</p>--}}
+{{--    <p>Config Locale: {{ Config::get('app.locale') }}</p>--}}
+{{--    <p>Current Translation: {{ __('messages.title') }}</p>--}}
+{{--    <p>Direction: {{ session('direction') }}</p>--}}
+{{--    <p>View Path: {{ __FILE__ }}</p>--}}
+{{--</div>--}}
+{{--@endif--}}
 
 <div class="container">
     <div class="title">{{ __('messages.title') }}</div>
@@ -124,11 +124,11 @@
        data-lang="ar">العربية</a>
 </div>
 
-<div style="background: #ff0; padding: 10px; text-align: center;">
-    <p>Current Locale: {{ app()->getLocale() }}</p>
-    <p>Session Locale: {{ session('locale') }}</p>
-    <p>App Direction: {{ config('app.direction') }}</p>
-</div>
+{{--<div style="background: #ff0; padding: 10px; text-align: center;">--}}
+{{--    <p>Current Locale: {{ app()->getLocale() }}</p>--}}
+{{--    <p>Session Locale: {{ session('locale') }}</p>--}}
+{{--    <p>App Direction: {{ config('app.direction') }}</p>--}}
+{{--</div>--}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {

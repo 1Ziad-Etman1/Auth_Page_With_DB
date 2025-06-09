@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewUserRegistered;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
@@ -13,6 +16,13 @@ class RegisterController extends Controller
     public function show()
     {
         return view('register');
+    }
+
+    public function notifyAdminAboutNewUser($user)
+    {
+        $adminEmail = 'admin1234@gmail.com';
+
+        Mail::to($adminEmail)->send(new NewUserRegistered($user));
     }
 
     public function store(Request $request) {
@@ -70,6 +80,13 @@ class RegisterController extends Controller
         'image' => $filename,
         'address' => $request->address
     ]);
+
+    try {
+        Mail::to('engziad90@gmail.com')->send(new NewUserRegistered($user));
+        Log::info('Email sent successfully to admin');
+    } catch (\Exception $e) {
+        Log::info('Email failed');
+    }
 
     return response()->json(['success' => true, 'user' => $user]);
 }

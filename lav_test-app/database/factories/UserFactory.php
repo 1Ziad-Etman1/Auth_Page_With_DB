@@ -30,7 +30,7 @@ class UserFactory extends Factory
             'phone' => fake()->phoneNumber(), // Add this
             'whatsapp' => fake()->phoneNumber(), // Add this
             'password' => static::$password ??= Hash::make('password'),
-            // REMOVE email_verified_at and remember_token
+
         ];
     }
 
