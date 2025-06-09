@@ -11,7 +11,8 @@ Route::middleware('web')->group(function () {
     Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
     Route::post('/check_username', [UserController::class, 'checkUsername'])->name('check_username');
 
-    Route::get('lang/{locale}', [LanguageController::class, 'switch'])->name('lang.switch');
+    Route::get('language/{locale}', [LanguageController::class, 'switch'])
+        ->name('lang.switch');
     Route::get('/test-lang', function() {
         return [
             'current_locale' => app()->getLocale(),

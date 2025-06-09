@@ -3,19 +3,28 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Carbon\Carbon; // Add this import
+use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
 
 class AppServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        // Set Carbon locale
-        Carbon::setLocale(config('app.locale'));
+        // Set Carbon locale based on current application locale
+        $locale = Session::get('locale', config('app.locale'));
+        // Carbon::setLocale($locale);
 
-        // For Arabic specifically
-        if (config('app.locale') === 'ar') {
-            setlocale(LC_TIME, 'ar_SA.utf8');
-            \DB::statement('SET lc_time_names = "ar_SA"'); // For Arabic MySQL dates
+        // Handle Arabic-specific settings
+        if ($locale === 'ar') {
+            // Set RTL direction for Arabic
+            Session::put('direction', 'rtl');
+        } else {
+            // Set LTR direction for other languages
+            Session::put('direction', 'ltr');
         }
+
+        // Set application locale
+        App::setLocale($locale);
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" dir="{{ config('app.direction', 'ltr') }}">
+<html lang="{{ app()->getLocale() }}" dir="{{ session('direction', config('app.direction', 'ltr')) }}">
 
 <head>
     <meta charset="UTF-8">
@@ -9,7 +9,20 @@
 </head>
 
 <body>
-@include('partials.header')
+{{--@include('partials.header')--}}
+
+{{-- Debug Information --}}
+@if(config('app.debug'))
+<div style="background: #f0f0f0; padding: 10px; margin: 10px; border: 1px solid #ccc;">
+    <h3>Debug Information:</h3>
+    <p>App Locale: {{ App::getLocale() }}</p>
+    <p>Session Locale: {{ Session::get('locale') }}</p>
+    <p>Config Locale: {{ Config::get('app.locale') }}</p>
+    <p>Current Translation: {{ __('messages.title') }}</p>
+    <p>Direction: {{ session('direction') }}</p>
+    <p>View Path: {{ __FILE__ }}</p>
+</div>
+@endif
 
 <div class="container">
     <div class="title">{{ __('messages.title') }}</div>
@@ -31,50 +44,59 @@
             <div class="user-details">
                 <div class="input-box">
                     <span class="details">{{ __('messages.full_name') }}</span>
-                    <input type="text" id="full_name" name="name" placeholder="{{ __('messages.full_name') }}" value="{{ old('name') }}" required>
+                    <input type="text" id="full_name" name="name" placeholder="{{ __('messages.full_name') }}"
+                           value="{{ old('name') }}" required>
                     <span class="error" id="fullNameFeedback">@error('name'){{ $message }}@enderror</span>
                 </div>
 
                 <div class="input-box">
                     <span class="details">{{ __('messages.username') }}</span>
-                    <input type="text" id="username" name="username" placeholder="{{ __('messages.username') }}" value="{{ old('username') }}" required>
+                    <input type="text" id="username" name="username" placeholder="{{ __('messages.username') }}"
+                           value="{{ old('username') }}" required>
                     <span class="error" id="usernameFeedback">@error('username'){{ $message }}@enderror</span>
                 </div>
 
                 <div class="input-box">
                     <span class="details">{{ __('messages.address') }}</span>
-                    <input type="text" name="address" placeholder="{{ __('messages.address') }}" value="{{ old('address') }}" required>
+                    <input type="text" name="address" placeholder="{{ __('messages.address') }}"
+                           value="{{ old('address') }}" required>
                     <span class="error">@error('address'){{ $message }}@enderror</span>
                 </div>
 
                 <div class="input-box">
                     <span class="details">{{ __('messages.phone') }}</span>
-                    <input type="text" name="phone" placeholder="{{ __('messages.phone') }}" value="{{ old('phone') }}" required>
+                    <input type="text" name="phone" placeholder="{{ __('messages.phone') }}" value="{{ old('phone') }}"
+                           required>
                     <span class="error">@error('phone'){{ $message }}@enderror</span>
                 </div>
 
                 <div class="input-box">
                     <span class="details">{{ __('messages.whatsapp') }}</span>
-                    <input type="text" name="whatsapp" id="whatsapp" placeholder="{{ __('messages.whatsapp') }}" value="{{ old('whatsapp') }}" required>
+                    <input type="text" name="whatsapp" id="whatsapp" placeholder="{{ __('messages.whatsapp') }}"
+                           value="{{ old('whatsapp') }}" required>
                     <span class="error">@error('whatsapp'){{ $message }}@enderror</span>
                 </div>
 
                 <div class="input-box">
                     <span class="details">{{ __('messages.email') }}</span>
-                    <input type="text" name="email" placeholder="{{ __('messages.email') }}" value="{{ old('email') }}" required>
+                    <input type="text" name="email" placeholder="{{ __('messages.email') }}" value="{{ old('email') }}"
+                           required>
                     <span class="error">@error('email'){{ $message }}@enderror</span>
                 </div>
 
                 <div class="input-box">
                     <span class="details">{{ __('messages.password') }}</span>
-                    <input type="password" id="password" name="password" placeholder="{{ __('messages.password') }}" required>
+                    <input type="password" id="password" name="password" placeholder="{{ __('messages.password') }}"
+                           required>
                     <span class="error" id="passwordFeedback">@error('password'){{ $message }}@enderror</span>
                 </div>
 
                 <div class="input-box">
                     <span class="details">{{ __('messages.confirm_password') }}</span>
-                    <input type="password" id="confirm_password" name="confirm_password" placeholder="{{ __('messages.confirm_password') }}" required>
-                    <span class="error" id="confirmPasswordFeedback">@error('confirm_password'){{ $message }}@enderror</span>
+                    <input type="password" id="confirm_password" name="confirm_password"
+                           placeholder="{{ __('messages.confirm_password') }}" required>
+                    <span class="error"
+                          id="confirmPasswordFeedback">@error('confirm_password'){{ $message }}@enderror</span>
                 </div>
             </div>
 
@@ -92,7 +114,7 @@
 
 @include('partials.footer')
 
-{{-- Optional: Language Switcher --}}
+{{-- Language Switcher --}}
 <div style="text-align:center; margin-top: 20px;">
     <a href="{{ route('lang.switch', 'en') }}"
        class="lang-switcher {{ app()->getLocale() === 'en' ? 'active' : '' }}"
@@ -101,12 +123,12 @@
        class="lang-switcher {{ app()->getLocale() === 'ar' ? 'active' : '' }}"
        data-lang="ar">العربية</a>
 </div>
+
 <div style="background: #ff0; padding: 10px; text-align: center;">
     <p>Current Locale: {{ app()->getLocale() }}</p>
     <p>Session Locale: {{ session('locale') }}</p>
     <p>App Direction: {{ config('app.direction') }}</p>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -172,12 +194,29 @@
                 $('#passwordFeedback').text('');
             }
         });
+
+        function changeLanguage(locale) {
+            $.ajax({
+                url: `/language/${locale}`,
+                method: 'GET',
+                success: function () {
+                    location.reload();
+                },
+                error: function (xhr) {
+                    console.error('Language switch failed:', xhr.responseText);
+                    alert(@json(__('messages.language_switch_error')));
+                }
+            });
+        }
+
+        // Attach click handlers to language switcher links
+        $('.lang-switcher').on('click', function (e) {
+            e.preventDefault();
+            const locale = $(this).data('lang');
+            changeLanguage(locale);
+        });
     });
 
-    function changeLang(locale) {
-        fetch(`/lang/${locale}`)
-            .then(() => location.reload());
-    }
 
     document.addEventListener('DOMContentLoaded', function() {
         // Update page direction on language change
