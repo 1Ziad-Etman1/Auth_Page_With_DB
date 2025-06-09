@@ -9,7 +9,7 @@
 </head>
 
 <body>
-{{--@include('partials.header')--}}
+@include('partials.header')
 
 {{-- Debug Information --}}
 {{--@if(config('app.debug'))--}}
